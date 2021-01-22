@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "http://logging.apache.org/log4j/1.2/apidocs/org/apache/log4j/xml/doc-files/log4j.dtd">
+<log4j:configuration>
+
+    <appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p %c{1}: %m%n" />
+        </layout>
+    </appender>
+    
+    <appender name="file" class="org.apache.log4j.rolling.RollingFileAppender">
+        <rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+            <!-- <param name="ActiveFileName" value="${app.log.dir}/documentum.log" /> -->
+            <param name="ActiveFileName" value="${DOCUMENTUM_LOG_FILE}" />
+            <!-- <param name="FileNamePattern" value="${app.log.dir}/documentum.%d.log" /> -->
+            <param name="FileNamePattern" value="${DOCUMENTUM_LOG_DIR}/${host_name}_documentum_rest_client_v1.%d.log" />
+        </rollingPolicy>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{ISO8601} %-5p %c{1}: %m%n" />
+        </layout>
+    </appender>
+
+    <logger name="documentumrestclient">
+        <level value="${app.log.level}" />
+    </logger> 
+
+    <root>
+        <level value="info" />
+        <appender-ref ref="stdout" />
+        <appender-ref ref="file" /> 
+    </root>
+
+</log4j:configuration>

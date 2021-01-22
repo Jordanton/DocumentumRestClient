@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:security="http://www.springframework.org/schema/security"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/security
+        http://www.springframework.org/schema/security/spring-security.xsd">
+        
+    <!--  Option 1 - Uncomment to Run on JBoss Server -->	
+	<!-- 
+	<bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean" lazy-init="false">
+		<property name="jndiName" value="java:/LATAXDS" />
+    </bean>
+ 	-->
+	<!-- Option 2 - Uncomment to run on Tomcat Server using LTXSYT16 -->
+	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />	
+		<property name="password" value="${db.password}" />
+	</bean>
+
+	<!--  Need this bean to use the JdbcTemplate -->
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	 
+    <!-- Option 3 - Uncomment to run on Tomcat Server using the local database / Hibernate & JPA -->
+	<!--         
+    <bean id="dataSource" class="org.apache.tomcat.jdbc.pool.DataSource" destroy-method="close">
+        <property name="driverClassName" value="org.postgresql.Driver" />
+        <property name="url" value="${db.url}" />
+        <property name="username" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+        <property name="initialSize" value="1" />
+    </bean>     
+    -->
+   	<!-- This is needed for the JPA configuration of the Entity Manager Factory -->
+   	<!-- 
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="persistenceUnitName" value="documentum" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    -->
+	<!-- This is needed for the JPA configuration of the Transaction Manager -->
+	<!--
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory" />
+    </bean>
+    -->
+	<!-- This is needed to translate SQL exceptions into Spring exceptions to be handled by Spring handler -->
+	<!--
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor" />
+ 	-->
+ 	
+    <context:annotation-config />
+
+    <tx:annotation-driven />
+
+    <context:component-scan base-package="documentumrestclient" />
+    
+    <!-- This is needed for Spring Security -->
+<!-- 
+    <security:authentication-manager>
+     	<security:authentication-provider>
+     		<security:jdbc-user-service data-source-ref="dataSource" />
+ -->     		
+<!--      		<security:jdbc-user-service data-source-ref="dataSource"
+				authorities-by-username-query="select u.user_id, r.authority
+                from security_user u, security_user_role r where u.user_id = ? and u.user_id =
+                r.user_id" /> -->
+<!--          	<security:jdbc-user-service data-source-ref="dataSource"
+				authorities-by-username-query="select u.user_id, r.authority
+                from security_user u, security_role r, security_user_role ur where u.user_id = ? and u.user_id =
+                ur.user_id and ur.role_id = r.role_id" users-by-username-query="select u.user_id, password, enabled from 
+                security_user u where u.user_id = ?" /> -->
+<!--                 
+    	</security:authentication-provider>
+    </security:authentication-manager>
+
+    <security:http auto-config="true" use-expressions="true">
+    	<security:logout logout-success-url="/" />
+    	<security:intercept-url pattern="/**" access="authenticated" />
+    </security:http>
+
+    <security:global-method-security pre-post-annotations="enabled" />
+-->
+</beans>        
